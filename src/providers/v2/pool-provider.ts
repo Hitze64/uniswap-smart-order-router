@@ -1,11 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
 
 import { IUniswapV2Pair__factory } from '../../types/v2/factories/IUniswapV2Pair__factory';
 import { CurrencyAmount, metric, MetricLoggerUnit } from '../../util';
+import { ChainId } from '../../util/chain-to-addresses';
 import { log } from '../../util/log';
 import { poolToString } from '../../util/routes';
 import { IMulticallProvider, Result } from '../multicall-provider';
@@ -107,7 +108,7 @@ export class V2PoolProvider implements IV2PoolProvider {
       `getPools called with ${tokenPairs.length} token pairs. Deduped down to ${poolAddressSet.size}`
     );
 
-    metric.putMetric('V2_RPC_POOL_RPC_CALL', 1, MetricLoggerUnit.None)
+    metric.putMetric('V2_RPC_POOL_RPC_CALL', 1, MetricLoggerUnit.None);
 
     const reservesResults = await this.getPoolsData<IReserves>(
       sortedPoolAddresses,

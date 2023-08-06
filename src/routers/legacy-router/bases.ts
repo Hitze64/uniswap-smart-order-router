@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 
 import {
   BTC_BNB,
@@ -12,13 +12,14 @@ import {
   USDC_BASE,
   USDC_BNB,
   USDC_MAINNET,
+  USDC_MANTA_PACIFIC_TESTNET,
   USDT_BNB,
   USDT_MAINNET,
   WBTC_MAINNET,
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
-
 } from '../../providers/token-provider';
+import { ChainId } from '../../util/chain-to-addresses';
 import { WRAPPED_NATIVE_CURRENCY } from '../../util/chains';
 
 type ChainTokenList = {
@@ -26,6 +27,7 @@ type ChainTokenList = {
 };
 
 export const BASES_TO_CHECK_TRADES_AGAINST = (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _tokenProvider: ITokenProvider
 ): ChainTokenList => {
   return {
@@ -60,9 +62,17 @@ export const BASES_TO_CHECK_TRADES_AGAINST = (
       USDT_BNB,
       BTC_BNB,
     ],
-    [ChainId.AVALANCHE]: [WRAPPED_NATIVE_CURRENCY[ChainId.AVALANCHE]!, USDC_AVAX, DAI_AVAX],
+    [ChainId.AVALANCHE]: [
+      WRAPPED_NATIVE_CURRENCY[ChainId.AVALANCHE]!,
+      USDC_AVAX,
+      DAI_AVAX,
+    ],
     [ChainId.BASE]: [WRAPPED_NATIVE_CURRENCY[ChainId.BASE]!, USDC_BASE],
     [ChainId.BASE_GOERLI]: [WRAPPED_NATIVE_CURRENCY[ChainId.BASE_GOERLI]!],
+    [ChainId.MANTA_PACIFIC_TESTNET]: [
+      WRAPPED_NATIVE_CURRENCY[ChainId.MANTA_PACIFIC_TESTNET]!,
+      USDC_MANTA_PACIFIC_TESTNET,
+    ],
   };
 };
 

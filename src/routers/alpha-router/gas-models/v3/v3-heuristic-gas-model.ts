@@ -1,16 +1,31 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, Percent, Price, TradeType } from '@uniswap/sdk-core';
+import { Percent, Price, TradeType } from '@uniswap/sdk-core';
 import { Pool } from '@uniswap/v3-sdk';
 import _ from 'lodash';
 
-import { SwapOptionsUniversalRouter, SwapType, WRAPPED_NATIVE_CURRENCY, } from '../../../..';
-import { ArbitrumGasData, OptimismGasData, } from '../../../../providers/v3/gas-data-provider';
+import {
+  SwapOptionsUniversalRouter,
+  SwapType,
+  WRAPPED_NATIVE_CURRENCY,
+} from '../../../..';
+import {
+  ArbitrumGasData,
+  OptimismGasData,
+} from '../../../../providers/v3/gas-data-provider';
 import { CurrencyAmount } from '../../../../util/amounts';
+import { ChainId } from '../../../../util/chain-to-addresses';
 import { getL2ToL1GasUsed } from '../../../../util/gas-factory-helpers';
 import { log } from '../../../../util/log';
-import { buildSwapMethodParameters, buildTrade, } from '../../../../util/methodParameters';
+import {
+  buildSwapMethodParameters,
+  buildTrade,
+} from '../../../../util/methodParameters';
 import { V3RouteWithValidQuote } from '../../entities/route-with-valid-quote';
-import { BuildOnChainGasModelFactoryType, IGasModel, IOnChainGasModelFactory, } from '../gas-model';
+import {
+  BuildOnChainGasModelFactoryType,
+  IGasModel,
+  IOnChainGasModelFactory,
+} from '../gas-model';
 
 import {
   BASE_SWAP_COST,

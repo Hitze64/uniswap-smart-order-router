@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import { Pool } from '@uniswap/v3-sdk';
 
 import { ProviderConfig } from '../../../providers/provider';
@@ -23,6 +23,7 @@ import {
   USDC_ETHEREUM_GNOSIS,
   USDC_GOERLI,
   USDC_MAINNET,
+  USDC_MANTA_PACIFIC_TESTNET,
   USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_OPTIMISM_GOERLI,
@@ -37,8 +38,13 @@ import {
   WBTC_GOERLI,
 } from '../../../providers/token-provider';
 import { IV2PoolProvider } from '../../../providers/v2/pool-provider';
-import { ArbitrumGasData, IL2GasDataProvider, OptimismGasData, } from '../../../providers/v3/gas-data-provider';
+import {
+  ArbitrumGasData,
+  IL2GasDataProvider,
+  OptimismGasData,
+} from '../../../providers/v3/gas-data-provider';
 import { CurrencyAmount } from '../../../util/amounts';
+import { ChainId } from '../../../util/chain-to-addresses';
 import {
   MixedRouteWithValidQuote,
   RouteWithValidQuote,
@@ -46,8 +52,7 @@ import {
   V3RouteWithValidQuote,
 } from '../entities/route-with-valid-quote';
 
-
-// When adding new usd gas tokens, ensure the tokens are ordered 
+// When adding new usd gas tokens, ensure the tokens are ordered
 // from tokens with highest decimals to lowest decimals. For example,
 // DAI_AVAX has 18 decimals and comes before USDC_AVAX which has 6 decimals.
 export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
@@ -71,6 +76,7 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.BNB]: [USDT_BNB, USDC_BNB, DAI_BNB],
   [ChainId.AVALANCHE]: [DAI_AVAX, USDC_AVAX],
   [ChainId.BASE]: [USDC_BASE],
+  [ChainId.MANTA_PACIFIC_TESTNET]: [USDC_MANTA_PACIFIC_TESTNET],
 };
 
 export type L1ToL2GasCosts = {
@@ -100,10 +106,10 @@ export type BuildV2GasModelFactoryType = {
 };
 
 export type LiquidityCalculationPools = {
-  usdPool: Pool
-  nativeQuoteTokenV3Pool: Pool | null
-  nativeAmountTokenV3Pool: Pool | null
-}
+  usdPool: Pool;
+  nativeQuoteTokenV3Pool: Pool | null;
+  nativeAmountTokenV3Pool: Pool | null;
+};
 
 /**
  * Contains functions for generating gas estimates for given routes.

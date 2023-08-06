@@ -5,7 +5,6 @@ import {
   MixedRouteSDK,
   Protocol,
 } from '@uniswap/router-sdk';
-import { ChainId } from '@uniswap/sdk-core';
 import { encodeRouteToPath } from '@uniswap/v3-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
@@ -20,6 +19,7 @@ import {
   QUOTER_V2_ADDRESSES,
 } from '../util/addresses';
 import { CurrencyAmount } from '../util/amounts';
+import { ChainId } from '../util/chain-to-addresses';
 import { log } from '../util/log';
 import { routeToString } from '../util/routes';
 
