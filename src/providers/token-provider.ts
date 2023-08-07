@@ -804,6 +804,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_BASE;
     case ChainId.BASE_GOERLI:
       return USDC_BASE_GOERLI;
+    case ChainId.MANTA_PACIFIC_TESTNET:
+      return USDC_MANTA_PACIFIC_TESTNET;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }

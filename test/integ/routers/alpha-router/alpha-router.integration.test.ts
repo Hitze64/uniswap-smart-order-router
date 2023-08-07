@@ -5,7 +5,14 @@
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers';
 import { AllowanceTransfer, PermitSingle } from '@uniswap/permit2-sdk';
 import { Protocol } from '@uniswap/router-sdk';
-import { ChainId, Currency, CurrencyAmount, Ether, Percent, Token, TradeType, } from '@uniswap/sdk-core';
+import {
+  Currency,
+  CurrencyAmount,
+  Ether,
+  Percent,
+  Token,
+  TradeType,
+} from '@uniswap/sdk-core';
 import {
   PERMIT2_ADDRESS,
   UNIVERSAL_ROUTER_ADDRESS as UNIVERSAL_ROUTER_ADDRESS_BY_CHAIN,
@@ -26,6 +33,7 @@ import {
   CachingV3PoolProvider,
   CEUR_CELO,
   CEUR_CELO_ALFAJORES,
+  ChainId,
   CUSD_CELO,
   CUSD_CELO_ALFAJORES,
   DAI_MAINNET,
@@ -36,8 +44,8 @@ import {
   ID_TO_PROVIDER,
   MethodParameters,
   MixedRoute,
-  NATIVE_CURRENCY,
   nativeOnChain,
+  NATIVE_CURRENCY,
   NodeJSCache,
   OnChainQuoteProvider,
   parseAmount,
@@ -45,22 +53,22 @@ import {
   SimulationStatus,
   StaticGasPriceProvider,
   SUPPORTED_CHAINS,
-  SWAP_ROUTER_02_ADDRESSES,
   SwapOptions,
   SwapType,
+  SWAP_ROUTER_02_ADDRESSES,
   TenderlySimulator,
+  UniswapMulticallProvider,
   UNI_GOERLI,
   UNI_MAINNET,
-  UniswapMulticallProvider,
   USDC_BNB,
   USDC_ETHEREUM_GNOSIS,
   USDC_MAINNET,
   USDC_ON,
   USDT_BNB,
   USDT_MAINNET,
-  V2_SUPPORTED,
   V2PoolProvider,
   V2Route,
+  V2_SUPPORTED,
   V3PoolProvider,
   V3Route,
   WBTC_GNOSIS,
@@ -601,7 +609,6 @@ describe('alpha router integration', () => {
             getQuoteToken(tokenIn, tokenOut, tradeType),
             tradeType,
             {
-
               type: SwapType.UNIVERSAL_ROUTER,
               recipient: alice._address,
               slippageTolerance: SLIPPAGE,
@@ -2561,6 +2568,8 @@ describe('quote for other networks', () => {
     [ChainId.AVALANCHE]: () => USDC_ON(ChainId.AVALANCHE),
     [ChainId.BASE]: () => USDC_ON(ChainId.BASE),
     [ChainId.BASE_GOERLI]: () => USDC_ON(ChainId.BASE_GOERLI),
+    [ChainId.MANTA_PACIFIC_TESTNET]: () =>
+      USDC_ON(ChainId.MANTA_PACIFIC_TESTNET),
   };
   const TEST_ERC20_2: { [chainId in ChainId]: () => Token } = {
     [ChainId.MAINNET]: () => DAI_ON(1),
@@ -2580,6 +2589,8 @@ describe('quote for other networks', () => {
     [ChainId.AVALANCHE]: () => DAI_ON(ChainId.AVALANCHE),
     [ChainId.BASE]: () => USDC_ON(ChainId.BASE),
     [ChainId.BASE_GOERLI]: () => USDC_ON(ChainId.BASE_GOERLI),
+    [ChainId.MANTA_PACIFIC_TESTNET]: () =>
+      USDC_ON(ChainId.MANTA_PACIFIC_TESTNET),
   };
 
   // TODO: Find valid pools/tokens on optimistic kovan and polygon mumbai. We skip those tests for now.
@@ -2602,7 +2613,7 @@ describe('quote for other networks', () => {
       const erc1 = TEST_ERC20_1[chain]();
       const erc2 = TEST_ERC20_2[chain]();
 
-      describe(`${ID_TO_NETWORK_NAME(chain)} ${tradeType} 2xx`, function() {
+      describe(`${ID_TO_NETWORK_NAME(chain)} ${tradeType} 2xx`, function () {
         const wrappedNative = WNATIVE_ON(chain);
 
         let alphaRouter: AlphaRouter;
@@ -2656,7 +2667,7 @@ describe('quote for other networks', () => {
           });
         });
 
-        describe(`Swap`, function() {
+        describe(`Swap`, function () {
           it(`${wrappedNative.symbol} -> erc20`, async () => {
             const tokenIn = wrappedNative;
             const tokenOut = erc1;
@@ -2720,8 +2731,8 @@ describe('quote for other networks', () => {
                   ? parseAmount('10', tokenIn)
                   : parseAmount('10', tokenOut)
                 : tradeType == TradeType.EXACT_INPUT
-                  ? parseAmount('1', tokenIn)
-                  : parseAmount('1', tokenOut);
+                ? parseAmount('1', tokenIn)
+                : parseAmount('1', tokenOut);
 
             const swap = await alphaRouter.route(
               amount,
@@ -2820,7 +2831,7 @@ describe('quote for other networks', () => {
         });
 
         if (isTenderlyEnvironmentSet()) {
-          describe(`Simulate + Swap`, function() {
+          describe(`Simulate + Swap`, function () {
             // Tenderly does not support Celo
             if ([ChainId.CELO, ChainId.CELO_ALFAJORES].includes(chain)) {
               return;
@@ -2837,19 +2848,19 @@ describe('quote for other networks', () => {
               const swapOptions: SwapOptions =
                 chain == ChainId.GOERLI
                   ? {
-                    type: SwapType.SWAP_ROUTER_02,
-                    recipient: WHALES(tokenIn),
-                    slippageTolerance: SLIPPAGE,
-                    deadline: parseDeadline(360),
-                    simulate: { fromAddress: WHALES(tokenIn) },
-                  }
+                      type: SwapType.SWAP_ROUTER_02,
+                      recipient: WHALES(tokenIn),
+                      slippageTolerance: SLIPPAGE,
+                      deadline: parseDeadline(360),
+                      simulate: { fromAddress: WHALES(tokenIn) },
+                    }
                   : {
-                    type: SwapType.UNIVERSAL_ROUTER,
-                    recipient: WHALES(tokenIn),
-                    slippageTolerance: SLIPPAGE,
-                    deadlineOrPreviousBlockhash: parseDeadline(360),
-                    simulate: { fromAddress: WHALES(tokenIn) },
-                  };
+                      type: SwapType.UNIVERSAL_ROUTER,
+                      recipient: WHALES(tokenIn),
+                      slippageTolerance: SLIPPAGE,
+                      deadlineOrPreviousBlockhash: parseDeadline(360),
+                      simulate: { fromAddress: WHALES(tokenIn) },
+                    };
 
               const swap = await alphaRouter.route(
                 amount,
@@ -2892,19 +2903,19 @@ describe('quote for other networks', () => {
               const swapOptions: SwapOptions =
                 chain == ChainId.GOERLI
                   ? {
-                    type: SwapType.SWAP_ROUTER_02,
-                    recipient: WHALES(tokenIn),
-                    slippageTolerance: SLIPPAGE,
-                    deadline: parseDeadline(360),
-                    simulate: { fromAddress: WHALES(tokenIn) },
-                  }
+                      type: SwapType.SWAP_ROUTER_02,
+                      recipient: WHALES(tokenIn),
+                      slippageTolerance: SLIPPAGE,
+                      deadline: parseDeadline(360),
+                      simulate: { fromAddress: WHALES(tokenIn) },
+                    }
                   : {
-                    type: SwapType.UNIVERSAL_ROUTER,
-                    recipient: WHALES(tokenIn),
-                    slippageTolerance: SLIPPAGE,
-                    deadlineOrPreviousBlockhash: parseDeadline(360),
-                    simulate: { fromAddress: WHALES(tokenIn) },
-                  };
+                      type: SwapType.UNIVERSAL_ROUTER,
+                      recipient: WHALES(tokenIn),
+                      slippageTolerance: SLIPPAGE,
+                      deadlineOrPreviousBlockhash: parseDeadline(360),
+                      simulate: { fromAddress: WHALES(tokenIn) },
+                    };
 
               const swap = await alphaRouter.route(
                 amount,
@@ -2947,19 +2958,19 @@ describe('quote for other networks', () => {
               const swapOptions: SwapOptions =
                 chain == ChainId.GOERLI
                   ? {
-                    type: SwapType.SWAP_ROUTER_02,
-                    recipient: WHALES(tokenIn),
-                    slippageTolerance: SLIPPAGE,
-                    deadline: parseDeadline(360),
-                    simulate: { fromAddress: WHALES(tokenIn) },
-                  }
+                      type: SwapType.SWAP_ROUTER_02,
+                      recipient: WHALES(tokenIn),
+                      slippageTolerance: SLIPPAGE,
+                      deadline: parseDeadline(360),
+                      simulate: { fromAddress: WHALES(tokenIn) },
+                    }
                   : {
-                    type: SwapType.UNIVERSAL_ROUTER,
-                    recipient: WHALES(tokenIn),
-                    slippageTolerance: SLIPPAGE,
-                    deadlineOrPreviousBlockhash: parseDeadline(360),
-                    simulate: { fromAddress: WHALES(tokenIn) },
-                  };
+                      type: SwapType.UNIVERSAL_ROUTER,
+                      recipient: WHALES(tokenIn),
+                      slippageTolerance: SLIPPAGE,
+                      deadlineOrPreviousBlockhash: parseDeadline(360),
+                      simulate: { fromAddress: WHALES(tokenIn) },
+                    };
 
               const swap = await alphaRouter.route(
                 amount,

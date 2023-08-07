@@ -2,25 +2,6 @@ import { Currency, Ether, NativeCurrency, Token } from '@uniswap/sdk-core';
 
 import { ChainId } from './chain-to-addresses';
 
-// WIP: Gnosis, Moonbeam
-export const SUPPORTED_CHAINS: ChainId[] = [
-  ChainId.MAINNET,
-  ChainId.OPTIMISM,
-  ChainId.OPTIMISM_GOERLI,
-  ChainId.ARBITRUM_ONE,
-  ChainId.ARBITRUM_GOERLI,
-  ChainId.POLYGON,
-  ChainId.POLYGON_MUMBAI,
-  ChainId.GOERLI,
-  ChainId.SEPOLIA,
-  ChainId.CELO_ALFAJORES,
-  ChainId.CELO,
-  ChainId.BNB,
-  ChainId.AVALANCHE,
-  ChainId.BASE,
-  // Gnosis and Moonbeam don't yet have contracts deployed yet
-];
-
 export const V2_SUPPORTED = [ChainId.MAINNET, ChainId.GOERLI, ChainId.SEPOLIA];
 
 export const HAS_L1_FEE = [
