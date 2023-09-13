@@ -103,6 +103,7 @@ export type BuildV2GasModelFactoryType = {
   gasPriceWei: BigNumber;
   poolProvider: IV2PoolProvider;
   token: Token;
+  providerConfig?: ProviderConfig;
 };
 
 export type LiquidityCalculationPools = {
@@ -153,6 +154,7 @@ export abstract class IV2GasModelFactory {
     gasPriceWei,
     poolProvider,
     token,
+    providerConfig,
   }: BuildV2GasModelFactoryType): Promise<IGasModel<V2RouteWithValidQuote>>;
 }
 
@@ -176,6 +178,7 @@ export abstract class IOnChainGasModelFactory {
     quoteToken,
     v2poolProvider: V2poolProvider,
     l2GasDataProvider,
+    providerConfig,
   }: BuildOnChainGasModelFactoryType): Promise<
     IGasModel<V3RouteWithValidQuote | MixedRouteWithValidQuote>
   >;

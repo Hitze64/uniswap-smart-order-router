@@ -3,6 +3,7 @@ import { Protocol } from '@uniswap/router-sdk';
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk/dist/entities';
 import { FeeAmount, Pool } from '@uniswap/v3-sdk';
+import JSBI from 'jsbi';
 import _ from 'lodash';
 
 import { IV2PoolProvider } from '../providers';
@@ -27,12 +28,16 @@ import { buildTrade } from './methodParameters';
 
 export async function getV2NativePool(
   token: Token,
-  poolProvider: IV2PoolProvider
+  poolProvider: IV2PoolProvider,
+  providerConfig?: ProviderConfig
 ): Promise<Pair | null> {
   const chainId = token.chainId as ChainId;
   const weth = WRAPPED_NATIVE_CURRENCY[chainId]!;
 
-  const poolAccessor = await poolProvider.getPools([[weth, token]]);
+  const poolAccessor = await poolProvider.getPools(
+    [[weth, token]],
+    providerConfig
+  );
   const pool = poolAccessor.getPool(weth, token);
 
   if (!pool || pool.reserve0.equalTo(0) || pool.reserve1.equalTo(0)) {
@@ -93,7 +98,9 @@ export async function getHighestLiquidityV3NativePool(
     return null;
   }
 
-  const maxPool = _.maxBy(pools, (pool) => pool.liquidity) as Pool;
+  const maxPool = pools.reduce((prev, current) => {
+    return JSBI.greaterThan(prev.liquidity, current.liquidity) ? prev : current;
+  });
 
   return maxPool;
 }
@@ -156,7 +163,9 @@ export async function getHighestLiquidityV3USDPool(
     throw new Error(message);
   }
 
-  const maxPool = _.maxBy(pools, (pool) => pool.liquidity) as Pool;
+  const maxPool = pools.reduce((prev, current) => {
+    return JSBI.greaterThan(prev.liquidity, current.liquidity) ? prev : current;
+  });
 
   return maxPool;
 }
@@ -306,7 +315,7 @@ export async function calculateGasUsed(
         v3PoolProvider,
         providerConfig
       ),
-      getV2NativePool(quoteToken, v2PoolProvider),
+      getV2NativePool(quoteToken, v2PoolProvider, providerConfig),
     ]);
     const nativePool = nativePools.find((pool) => pool !== null);
 

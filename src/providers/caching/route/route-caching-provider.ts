@@ -36,7 +36,8 @@ export abstract class IRouteCachingProvider {
     quoteToken: Token,
     tradeType: TradeType,
     protocols: Protocol[],
-    blockNumber: number
+    blockNumber: number,
+    optimistic = false
   ): Promise<CachedRoutes | undefined> => {
     if (
       (await this.getCacheMode(
@@ -55,10 +56,12 @@ export abstract class IRouteCachingProvider {
       amount,
       quoteToken,
       tradeType,
-      protocols
+      protocols,
+      blockNumber,
+      optimistic
     );
 
-    return this.filterExpiredCachedRoutes(cachedRoute, blockNumber);
+    return this.filterExpiredCachedRoutes(cachedRoute, blockNumber, optimistic);
   };
 
   /**
@@ -133,11 +136,14 @@ export abstract class IRouteCachingProvider {
     protocols: Protocol[]
   ): Promise<CacheMode>;
 
-  private filterExpiredCachedRoutes(
+  protected filterExpiredCachedRoutes(
     cachedRoutes: CachedRoutes | undefined,
-    blockNumber: number
+    blockNumber: number,
+    optimistic: boolean
   ): CachedRoutes | undefined {
-    return cachedRoutes?.notExpired(blockNumber) ? cachedRoutes : undefined;
+    return cachedRoutes?.notExpired(blockNumber, optimistic)
+      ? cachedRoutes
+      : undefined;
   }
 
   /**
@@ -156,7 +162,9 @@ export abstract class IRouteCachingProvider {
     amount: CurrencyAmount<Currency>,
     quoteToken: Token,
     tradeType: TradeType,
-    protocols: Protocol[]
+    protocols: Protocol[],
+    currentBlockNumber: number,
+    optimistic: boolean
   ): Promise<CachedRoutes | undefined>;
 
   /**

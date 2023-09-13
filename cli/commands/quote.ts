@@ -41,6 +41,11 @@ export class Quote extends BaseCommand {
       default: false,
     }),
     simulate: flags.boolean({ required: false, default: false }),
+    debugRouting: flags.boolean({ required: false, default: true }),
+    enableFeeOnTransferFeeFetching: flags.boolean({
+      required: false,
+      default: true,
+    }),
   };
 
   async run() {
@@ -69,6 +74,9 @@ export class Quote extends BaseCommand {
       protocols: protocolsStr,
       forceCrossProtocol,
       forceMixedRoutes,
+      simulate,
+      debugRouting,
+      enableFeeOnTransferFeeFetching,
     } = flags;
 
     const topNSecondHopForTokenAddress = new MapWithLowerCaseKey();
@@ -157,6 +165,8 @@ export class Quote extends BaseCommand {
           protocols,
           forceCrossProtocol,
           forceMixedRoutes,
+          debugRouting,
+          enableFeeOnTransferFeeFetching,
         }
       );
     } else {
@@ -192,6 +202,8 @@ export class Quote extends BaseCommand {
           protocols,
           forceCrossProtocol,
           forceMixedRoutes,
+          debugRouting,
+          enableFeeOnTransferFeeFetching,
         }
       );
     }

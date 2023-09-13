@@ -8,6 +8,7 @@ import {
   SwapType,
   WRAPPED_NATIVE_CURRENCY,
 } from '../../../..';
+import { ProviderConfig } from '../../../../providers/provider';
 import {
   ArbitrumGasData,
   OptimismGasData,
@@ -66,6 +67,7 @@ export class V3HeuristicGasModelFactory extends IOnChainGasModelFactory {
     amountToken,
     quoteToken,
     l2GasDataProvider,
+    providerConfig,
   }: BuildOnChainGasModelFactoryType): Promise<
     IGasModel<V3RouteWithValidQuote>
   > {
@@ -170,7 +172,8 @@ export class V3HeuristicGasModelFactory extends IOnChainGasModelFactory {
         const { totalGasCostNativeCurrency, baseGasUse } = this.estimateGas(
           routeWithValidQuote,
           gasPriceWei,
-          chainId
+          chainId,
+          providerConfig
         );
 
         const token0 = usdPool.token0.address == nativeCurrency.address;
@@ -220,7 +223,8 @@ export class V3HeuristicGasModelFactory extends IOnChainGasModelFactory {
       const { totalGasCostNativeCurrency, baseGasUse } = this.estimateGas(
         routeWithValidQuote,
         gasPriceWei,
-        chainId
+        chainId,
+        providerConfig
       );
 
       let gasCostInTermsOfQuoteToken: CurrencyAmount | null = null;
@@ -364,7 +368,8 @@ export class V3HeuristicGasModelFactory extends IOnChainGasModelFactory {
   private estimateGas(
     routeWithValidQuote: V3RouteWithValidQuote,
     gasPriceWei: BigNumber,
-    chainId: ChainId
+    chainId: ChainId,
+    providerConfig?: ProviderConfig
   ) {
     const totalInitializedTicksCrossed = BigNumber.from(
       Math.max(1, _.sum(routeWithValidQuote.initializedTicksCrossedList))
@@ -394,7 +399,8 @@ export class V3HeuristicGasModelFactory extends IOnChainGasModelFactory {
       .add(hopsGasUse)
       .add(tokenOverhead)
       .add(tickGasUse)
-      .add(uninitializedTickGasUse);
+      .add(uninitializedTickGasUse)
+      .add(providerConfig?.additionalGasOverhead ?? BigNumber.from(0));
 
     const baseGasCostWei = gasPriceWei.mul(baseGasUse);
 

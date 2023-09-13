@@ -57,6 +57,8 @@ import {
   SwapType,
   SWAP_ROUTER_02_ADDRESSES,
   TenderlySimulator,
+  TokenPropertiesProvider,
+  TokenValidatorProvider,
   UniswapMulticallProvider,
   UNI_GOERLI,
   UNI_MAINNET,
@@ -76,12 +78,13 @@ import {
   WETH9,
   WNATIVE_ON,
 } from '../../../../src';
+import { OnChainTokenFeeFetcher } from '../../../../src/providers/token-fee-fetcher';
 import { DEFAULT_ROUTING_CONFIG_BY_CHAIN } from '../../../../src/routers/alpha-router/config';
 import { Permit2__factory } from '../../../../src/types/other/factories/Permit2__factory';
 import { getBalanceAndApprove } from '../../../test-util/getBalanceAndApprove';
 import { WHALES } from '../../../test-util/whales';
 
-const FORK_BLOCK = 16075500;
+const FORK_BLOCK = 17894002;
 const UNIVERSAL_ROUTER_ADDRESS = UNIVERSAL_ROUTER_ADDRESS_BY_CHAIN(1);
 const SLIPPAGE = new Percent(15, 100); // 5% or 10_000?
 
@@ -447,7 +450,7 @@ describe('alpha router integration', () => {
       alice._address,
       [parseAmount('4000', WETH9[1])],
       [
-        '0x06920c9fc643de77b99cb7670a944ad31eaaa260', // WETH whale
+        '0x2fEb1512183545f48f6b9C5b4EbfCaF49CfCa6F3', // WETH whale
       ]
     );
 
@@ -488,9 +491,25 @@ describe('alpha router integration', () => {
       new V3PoolProvider(ChainId.MAINNET, multicall2Provider),
       new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
     );
+    const tokenValidatorProvider = new TokenValidatorProvider(
+      ChainId.MAINNET,
+      multicall2Provider,
+      new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
+    );
+    const tokenFeeFetcher = new OnChainTokenFeeFetcher(
+      ChainId.MAINNET,
+      hardhat.provider
+    );
+    const tokenPropertiesProvider = new TokenPropertiesProvider(
+      ChainId.MAINNET,
+      tokenValidatorProvider,
+      new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false })),
+      tokenFeeFetcher
+    );
     const v2PoolProvider = new V2PoolProvider(
       ChainId.MAINNET,
-      multicall2Provider
+      multicall2Provider,
+      tokenPropertiesProvider
     );
 
     const ethEstimateGasSimulator = new EthEstimateGasSimulator(
@@ -2416,6 +2435,76 @@ describe('alpha router integration', () => {
             10000
           );
         });
+
+        it('ETH -> UNI', async () => {
+          /// Fails for v3 for some reason, ProviderGasError
+          const tokenIn = Ether.onChain(1) as Currency;
+          const tokenOut = UNI_MAINNET;
+          const amount =
+            tradeType == TradeType.EXACT_INPUT
+              ? parseAmount('10', tokenIn)
+              : parseAmount('10000', tokenOut);
+
+          const swap = await alphaRouter.route(
+            amount,
+            getQuoteToken(tokenIn, tokenOut, tradeType),
+            tradeType,
+            {
+              type: SwapType.UNIVERSAL_ROUTER,
+              recipient: alice._address,
+              slippageTolerance: SLIPPAGE,
+              deadlineOrPreviousBlockhash: parseDeadline(360),
+            },
+            {
+              ...ROUTING_CONFIG,
+              protocols: [Protocol.MIXED],
+            }
+          );
+          expect(swap).toBeDefined();
+          expect(swap).not.toBeNull();
+
+          const { quote, methodParameters } = swap!;
+
+          expect(methodParameters).not.toBeUndefined();
+
+          const { tokenInBefore, tokenInAfter, tokenOutBefore, tokenOutAfter } =
+            await executeSwap(
+              SwapType.UNIVERSAL_ROUTER,
+              methodParameters!,
+              tokenIn,
+              tokenOut
+            );
+
+          if (tradeType == TradeType.EXACT_INPUT) {
+            // We've swapped 10 ETH + gas costs
+            expect(
+              tokenInBefore
+                .subtract(tokenInAfter)
+                .greaterThan(parseAmount('10', tokenIn))
+            ).toBe(true);
+            checkQuoteToken(
+              tokenOutBefore,
+              tokenOutAfter,
+              CurrencyAmount.fromRawAmount(tokenOut, quote.quotient)
+            );
+          } else {
+            /**
+             * @dev it is possible for an exactOut to generate more tokens on V2 due to precision errors
+             */
+            expect(
+              !tokenOutAfter
+                .subtract(tokenOutBefore)
+                // == .greaterThanOrEqualTo
+                .lessThan(
+                  CurrencyAmount.fromRawAmount(
+                    tokenOut,
+                    expandDecimals(tokenOut, 10000)
+                  )
+                )
+            ).toBe(true);
+            // Can't easily check slippage for ETH due to gas costs effecting ETH balance.
+          }
+        });
       });
     });
   });
@@ -2587,8 +2676,8 @@ describe('quote for other networks', () => {
     [ChainId.MOONBEAM]: () => WBTC_MOONBEAM,
     [ChainId.BNB]: () => USDT_BNB,
     [ChainId.AVALANCHE]: () => DAI_ON(ChainId.AVALANCHE),
-    [ChainId.BASE]: () => USDC_ON(ChainId.BASE),
-    [ChainId.BASE_GOERLI]: () => USDC_ON(ChainId.BASE_GOERLI),
+    [ChainId.BASE]: () => WNATIVE_ON(ChainId.BASE),
+    [ChainId.BASE_GOERLI]: () => WNATIVE_ON(ChainId.BASE_GOERLI),
     [ChainId.MANTA_PACIFIC_TESTNET]: () =>
       USDC_ON(ChainId.MANTA_PACIFIC_TESTNET),
   };
@@ -2600,14 +2689,9 @@ describe('quote for other networks', () => {
       c != ChainId.OPTIMISM_GOERLI &&
       c != ChainId.POLYGON_MUMBAI &&
       c != ChainId.ARBITRUM_GOERLI &&
-      c != ChainId.OPTIMISM && /// @dev infura has been having issues with optimism lately
       // Tests are failing https://github.com/Uniswap/smart-order-router/issues/104
       c != ChainId.CELO_ALFAJORES &&
-      c != ChainId.SEPOLIA &&
-      // skip avalanche for now, need to add liquidity pools.
-      c != ChainId.AVALANCHE &&
-      c != ChainId.BASE &&
-      c != ChainId.BASE_GOERLI
+      c != ChainId.SEPOLIA
   )) {
     for (const tradeType of [TradeType.EXACT_INPUT, TradeType.EXACT_OUTPUT]) {
       const erc1 = TEST_ERC20_1[chain]();
@@ -2632,7 +2716,26 @@ describe('quote for other networks', () => {
             new V3PoolProvider(chain, multicall2Provider),
             new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
           );
-          const v2PoolProvider = new V2PoolProvider(chain, multicall2Provider);
+          const tokenValidatorProvider = new TokenValidatorProvider(
+            ChainId.MAINNET,
+            multicall2Provider,
+            new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
+          );
+          const tokenFeeFetcher = new OnChainTokenFeeFetcher(
+            ChainId.MAINNET,
+            hardhat.provider
+          );
+          const tokenPropertiesProvider = new TokenPropertiesProvider(
+            ChainId.MAINNET,
+            tokenValidatorProvider,
+            new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false })),
+            tokenFeeFetcher
+          );
+          const v2PoolProvider = new V2PoolProvider(
+            chain,
+            multicall2Provider,
+            tokenPropertiesProvider
+          );
 
           const ethEstimateGasSimulator = new EthEstimateGasSimulator(
             chain,
@@ -2720,7 +2823,10 @@ describe('quote for other networks', () => {
 
           it(`${native} -> erc20`, async () => {
             const tokenIn = nativeOnChain(chain);
-            const tokenOut = erc2;
+            // TODO ROUTE-64: Remove this once smart-order-router supports ETH native currency on BASE
+            // see https://uniswapteam.slack.com/archives/C021SU4PMR7/p1691593679108459?thread_ts=1691532336.742419&cid=C021SU4PMR7
+            const tokenOut =
+              chain == ChainId.BASE ? USDC_ON(ChainId.BASE) : erc2;
 
             // Celo currently has low liquidity and will not be able to find route for
             // large input amounts

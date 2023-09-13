@@ -105,7 +105,8 @@ export class CachingV3PoolProvider implements IV3PoolProvider {
         const pool = poolAccessor.getPoolByAddress(address);
         if (pool) {
           poolAddressToPool[address] = pool;
-          await this.cache.set(this.POOL_KEY(this.chainId, address), pool);
+          // We don't want to wait for this caching to complete before returning the pools.
+          this.cache.set(this.POOL_KEY(this.chainId, address), pool);
         }
       }
     }

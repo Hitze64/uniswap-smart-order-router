@@ -176,7 +176,7 @@ export const SUPPORTED_CHAINS = [
   ChainId.BASE_GOERLI,
   ChainId.MANTA_PACIFIC_TESTNET,
 ] as const;
-export type SupportedChainsType = (typeof SUPPORTED_CHAINS)[number];
+export type SupportedChainsType = typeof SUPPORTED_CHAINS[number];
 
 export const CHAIN_TO_ADDRESSES_MAP: Record<
   SupportedChainsType,

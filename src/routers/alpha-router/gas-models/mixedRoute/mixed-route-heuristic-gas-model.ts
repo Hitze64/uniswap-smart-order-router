@@ -6,6 +6,7 @@ import JSBI from 'jsbi';
 import _ from 'lodash';
 
 import { WRAPPED_NATIVE_CURRENCY } from '../../../..';
+import { ProviderConfig } from '../../../../providers/provider';
 import { log } from '../../../../util';
 import { CurrencyAmount } from '../../../../util/amounts';
 import { ChainId } from '../../../../util/chain-to-addresses';
@@ -56,6 +57,7 @@ export class MixedRouteHeuristicGasModelFactory extends IOnChainGasModelFactory 
     pools,
     quoteToken,
     v2poolProvider: V2poolProvider,
+    providerConfig,
   }: BuildOnChainGasModelFactoryType): Promise<
     IGasModel<MixedRouteWithValidQuote>
   > {
@@ -76,7 +78,8 @@ export class MixedRouteHeuristicGasModelFactory extends IOnChainGasModelFactory 
         const { totalGasCostNativeCurrency, baseGasUse } = this.estimateGas(
           routeWithValidQuote,
           gasPriceWei,
-          chainId
+          chainId,
+          providerConfig
         );
 
         const token0 = usdPool.token0.address == nativeCurrency.address;
@@ -108,7 +111,11 @@ export class MixedRouteHeuristicGasModelFactory extends IOnChainGasModelFactory 
     let nativeV2Pool: Pair | null;
     if (V2poolProvider) {
       /// MixedRoutes
-      nativeV2Pool = await getV2NativePool(quoteToken, V2poolProvider);
+      nativeV2Pool = await getV2NativePool(
+        quoteToken,
+        V2poolProvider,
+        providerConfig
+      );
     }
 
     const usdToken =
@@ -126,7 +133,8 @@ export class MixedRouteHeuristicGasModelFactory extends IOnChainGasModelFactory 
       const { totalGasCostNativeCurrency, baseGasUse } = this.estimateGas(
         routeWithValidQuote,
         gasPriceWei,
-        chainId
+        chainId,
+        providerConfig
       );
 
       if (!nativeV3Pool && !nativeV2Pool) {
@@ -213,7 +221,8 @@ export class MixedRouteHeuristicGasModelFactory extends IOnChainGasModelFactory 
   private estimateGas(
     routeWithValidQuote: MixedRouteWithValidQuote,
     gasPriceWei: BigNumber,
-    chainId: ChainId
+    chainId: ChainId,
+    providerConfig?: ProviderConfig
   ) {
     const totalInitializedTicksCrossed = BigNumber.from(
       Math.max(1, _.sum(routeWithValidQuote.initializedTicksCrossedList))
@@ -247,6 +256,10 @@ export class MixedRouteHeuristicGasModelFactory extends IOnChainGasModelFactory 
 
     // base estimate gas used based on chainId estimates for hops and ticks gas useage
     baseGasUse = baseGasUse.add(tickGasUse).add(uninitializedTickGasUse);
+
+    if (providerConfig?.additionalGasOverhead) {
+      baseGasUse = baseGasUse.add(providerConfig.additionalGasOverhead);
+    }
 
     const baseGasCostWei = gasPriceWei.mul(baseGasUse);
 

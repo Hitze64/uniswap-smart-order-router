@@ -14,7 +14,7 @@ import {
   CacheMode,
   CachingTokenListProvider,
   CurrencyAmount,
-  DAI_MAINNET as DAI,
+  DAI_MAINNET as DAI, DEFAULT_TOKEN_PROPERTIES_RESULT,
   ETHGasStationInfoProvider,
   FallbackTenderlySimulator,
   MixedRoute,
@@ -27,6 +27,7 @@ import {
   SwapRouterProvider,
   SwapToRatioStatus,
   SwapType,
+  TokenPropertiesProvider,
   TokenProvider,
   UniswapMulticallProvider,
   USDC_MAINNET as USDC,
@@ -44,7 +45,7 @@ import {
   V3RouteWithValidQuote,
   V3SubgraphPool,
   V3SubgraphProvider,
-  WRAPPED_NATIVE_CURRENCY,
+  WRAPPED_NATIVE_CURRENCY
 } from '../../../../src';
 import { ProviderConfig } from '../../../../src/providers/provider';
 import { TokenValidationResult, TokenValidatorProvider, } from '../../../../src/providers/token-validator-provider';
@@ -101,8 +102,10 @@ describe('alpha router', () => {
 
   let mockBlockTokenListProvider: sinon.SinonStubbedInstance<CachingTokenListProvider>;
   let mockTokenValidatorProvider: sinon.SinonStubbedInstance<TokenValidatorProvider>;
+  let mockTokenPropertiesProvider: sinon.SinonStubbedInstance<TokenPropertiesProvider>;
 
   let mockFallbackTenderlySimulator: sinon.SinonStubbedInstance<FallbackTenderlySimulator>;
+
 
   let inMemoryRouteCachingProvider: InMemoryRouteCachingProvider;
 
@@ -375,6 +378,13 @@ describe('alpha router', () => {
       getValidationByToken: () => TokenValidationResult.UNKN,
     });
 
+    mockTokenPropertiesProvider = sinon.createStubInstance(
+      TokenPropertiesProvider
+    )
+    mockTokenPropertiesProvider.getTokensProperties.resolves({
+      '0x0': DEFAULT_TOKEN_PROPERTIES_RESULT
+    })
+
     mockFallbackTenderlySimulator = sinon.createStubInstance(
       FallbackTenderlySimulator
     );
@@ -402,7 +412,8 @@ describe('alpha router', () => {
       swapRouterProvider: mockSwapRouterProvider,
       tokenValidatorProvider: mockTokenValidatorProvider,
       simulator: mockFallbackTenderlySimulator,
-      routeCachingProvider: inMemoryRouteCachingProvider
+      routeCachingProvider: inMemoryRouteCachingProvider,
+      tokenPropertiesProvider: mockTokenPropertiesProvider,
     });
   });
 
@@ -504,6 +515,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -786,7 +798,10 @@ describe('alpha router', () => {
       /// @dev so it's hard to actually force all 3 protocols since there's no concept of liquidity in these mocks
       expect(
         _.filter(swap!.route, (r) => r.protocol == Protocol.V3)
-      ).toHaveLength(2);
+      ).toHaveLength(1);
+      expect(
+        _.filter(swap!.route, (r) => r.protocol == Protocol.V2)
+      ).toHaveLength(1);
       expect(
         _.filter(swap!.route, (r) => r.protocol == Protocol.MIXED)
       ).toHaveLength(1);
@@ -904,6 +919,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
 
@@ -1089,6 +1105,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
 
@@ -1498,6 +1515,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
 
@@ -1870,6 +1888,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: USDC,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -2032,6 +2051,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: USDC,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -2111,6 +2131,7 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: USDC,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -2664,7 +2685,7 @@ describe('alpha router', () => {
               ROUTING_CONFIG
             );
 
-            expect(spy.calledTwice).toEqual(true);
+            expect(spy.calledOnce).toEqual(true);
 
             const [
               optimalRatioFirst,
@@ -2680,22 +2701,6 @@ describe('alpha router', () => {
             );
             expect(inputBalanceFirst).toEqual(token0Balance);
             expect(outputBalanceFirst).toEqual(token1Balance);
-
-            const [
-              optimalRatioSecond,
-              exchangeRateSecond,
-              inputBalanceSecond,
-              outputBalanceSecond,
-            ] = spy.secondCall.args;
-            expect(optimalRatioSecond.toFixed(2)).toEqual(
-              new Fraction(1, 8).toFixed(2)
-            );
-            // all other params remain the same
-            expect(exchangeRateSecond.asFraction.toFixed(6)).toEqual(
-              new Fraction(1, 1).toFixed(6)
-            );
-            expect(inputBalanceSecond).toEqual(token0Balance);
-            expect(outputBalanceSecond).toEqual(token1Balance);
           }
         );
 
@@ -2734,7 +2739,7 @@ describe('alpha router', () => {
               ROUTING_CONFIG
             );
 
-            expect(spy.calledTwice).toEqual(true);
+            expect(spy.calledOnce).toEqual(true);
 
             const [
               optimalRatioFirst,
@@ -2750,20 +2755,6 @@ describe('alpha router', () => {
             );
             expect(inputBalanceFirst).toEqual(token0Balance);
             expect(outputBalanceFirst).toEqual(token1Balance);
-
-            const [
-              optimalRatioSecond,
-              exchangeRateSecond,
-              inputBalanceSecond,
-              outputBalanceSecond,
-            ] = spy.secondCall.args;
-            expect(optimalRatioSecond).toEqual(new Fraction(0, 1));
-            // all other params remain the same
-            expect(exchangeRateSecond.asFraction.toFixed(6)).toEqual(
-              new Fraction(1, 1).toFixed(6)
-            );
-            expect(inputBalanceSecond).toEqual(token0Balance);
-            expect(outputBalanceSecond).toEqual(token1Balance);
           }
         );
       });
