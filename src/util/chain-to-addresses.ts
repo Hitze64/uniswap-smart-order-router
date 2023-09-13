@@ -17,6 +17,7 @@ export enum ChainId {
   BASE_GOERLI = 84531,
   BASE = 8453,
   MANTA_PACIFIC_TESTNET = 3441005,
+  MANTA_PACIFIC = 169,
 }
 
 type ChainAddresses = {
@@ -153,9 +154,20 @@ const MANTA_PACIFIC_TESTNET_ADDRESSES: ChainAddresses = {
   quoterAddress: '0x748e48759273F61Fef40C193a9B7bbEFf795f781',
   v3MigratorAddress: '0x5C6636EaB7891A429cd0014e33e3482835A6170D',
   nonfungiblePositionManagerAddress:
-    '0xA14D4e2e52D3f7972443C2FDC57a41B7a4693Fd8',
+    '0x2dc114c0DEf2BC849996756E691FC6e8339649E1',
   tickLensAddress: '0x7173A75d23623eeAa6FEA39E9d043f6A52f87Cf9',
   swapRouter02Address: '0x5bd1F6735B80e58aAC88B8A94836854d3068a13a',
+};
+
+const MANTA_PACIFIC_ADDRESSES: ChainAddresses = {
+  v3CoreFactoryAddress: '0x5bd1F6735B80e58aAC88B8A94836854d3068a13a',
+  multicallAddress: '0x6Cb54E76D7c739430A440A4b2dF97FC4a784EAdf',
+  quoterAddress: '0x1e139877CbB99f1fa94BB8763aFc6161cC1dc303',
+  v3MigratorAddress: '0x3662E0eFaaf5Ba9Dc728a2a9b499F80Df022c73D',
+  nonfungiblePositionManagerAddress:
+    '0xe77e3F98a386a4C8f8c706A2aCfFdf57e70D06c6',
+  tickLensAddress: '0x1AAABDFb88B289093C0951636F980Ed974B02440',
+  swapRouter02Address: '0x3488d5A2D0281f546e43435715C436b46Ec1C678',
 };
 
 export const SUPPORTED_CHAINS = [
@@ -175,6 +187,7 @@ export const SUPPORTED_CHAINS = [
   ChainId.BASE,
   ChainId.BASE_GOERLI,
   ChainId.MANTA_PACIFIC_TESTNET,
+  ChainId.MANTA_PACIFIC,
 ] as const;
 export type SupportedChainsType = typeof SUPPORTED_CHAINS[number];
 
@@ -198,4 +211,5 @@ export const CHAIN_TO_ADDRESSES_MAP: Record<
   [ChainId.BASE]: BASE_ADDRESSES,
   [ChainId.BASE_GOERLI]: BASE_GOERLI_ADDRESSES,
   [ChainId.MANTA_PACIFIC_TESTNET]: MANTA_PACIFIC_TESTNET_ADDRESSES,
+  [ChainId.MANTA_PACIFIC]: MANTA_PACIFIC_ADDRESSES,
 };

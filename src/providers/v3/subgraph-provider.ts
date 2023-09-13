@@ -65,7 +65,9 @@ const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
   [ChainId.BASE]:
     'https://api.studio.thegraph.com/query/48211/uniswap-v3-base/version/latest',
   [ChainId.MANTA_PACIFIC_TESTNET]:
-    'http://manta-LoadB-NVW76ZGFHXPO-e5139453fef6a975.elb.us-west-2.amazonaws.com:8000/subgraphs/name/aperture/uniswap-v3',
+    'https://d3lcl3uht06cq4.cloudfront.net/subgraphs/name/aperture/uniswap-v3',
+  [ChainId.MANTA_PACIFIC]:
+    'https://d2vin613o4opvi.cloudfront.net/subgraphs/name/aperture/uniswap-v3',
 };
 
 const PAGE_SIZE = 1000; // 1k is max possible query size from subgraph.
