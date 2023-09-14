@@ -547,6 +547,30 @@ export const USDC_MANTA_PACIFIC_TESTNET = new Token(
   'USDC Test Token'
 );
 
+export const USDC_MANTA_PACIFIC = new Token(
+  ChainId.MANTA_PACIFIC,
+  '0xb73603C5d87fA094B7314C74ACE2e64D165016fb',
+  6,
+  'USDC',
+  'USD Coin'
+);
+
+export const USDT_MANTA_PACIFIC = new Token(
+  ChainId.MANTA_PACIFIC,
+  '0xf417F5A458eC102B90352F697D6e2Ac3A3d2851f',
+  6,
+  'USDT',
+  'Tether USD'
+);
+
+export const DAI_MANTA_PACIFIC = new Token(
+  ChainId.MANTA_PACIFIC,
+  '0x1c466b9371f8aBA0D7c458bE10a62192Fcb8Aa71',
+  18,
+  'DAI',
+  'Dai Stablecoin'
+);
+
 export class TokenProvider implements ITokenProvider {
   constructor(
     private chainId: ChainId,
@@ -748,6 +772,8 @@ export const DAI_ON = (chainId: ChainId): Token => {
       return DAI_BNB;
     case ChainId.AVALANCHE:
       return DAI_AVAX;
+    case ChainId.MANTA_PACIFIC:
+      return DAI_MANTA_PACIFIC;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
@@ -767,6 +793,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_ARBITRUM;
     case ChainId.BNB:
       return USDT_BNB;
+    case ChainId.MANTA_PACIFIC:
+      return USDT_MANTA_PACIFIC;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
@@ -806,6 +834,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_BASE_GOERLI;
     case ChainId.MANTA_PACIFIC_TESTNET:
       return USDC_MANTA_PACIFIC_TESTNET;
+    case ChainId.MANTA_PACIFIC:
+      return USDC_MANTA_PACIFIC;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }

@@ -11,6 +11,8 @@ export const HAS_L1_FEE = [
   ChainId.ARBITRUM_GOERLI,
   ChainId.BASE,
   ChainId.BASE_GOERLI,
+  ChainId.MANTA_PACIFIC_TESTNET,
+  ChainId.MANTA_PACIFIC,
 ];
 
 export const NETWORKS_WITH_SAME_UNISWAP_ADDRESSES = [
@@ -60,6 +62,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.BASE_GOERLI;
     case 3441005:
       return ChainId.MANTA_PACIFIC_TESTNET;
+    case 169:
+      return ChainId.MANTA_PACIFIC;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -84,6 +88,7 @@ export enum ChainName {
   BASE = 'base-mainnet',
   BASE_GOERLI = 'base-goerli',
   MANTA_PACIFIC_TESTNET = 'manta-pacific-testnet',
+  MANTA_PACIFIC = 'manta-pacific',
 }
 
 export enum NativeCurrencyName {
@@ -158,6 +163,11 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ],
+  [ChainId.MANTA_PACIFIC]: [
+    'ETH',
+    'ETHER',
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  ],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -178,6 +188,7 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.AVALANCHE]: NativeCurrencyName.AVALANCHE,
   [ChainId.BASE]: NativeCurrencyName.ETHER,
   [ChainId.MANTA_PACIFIC_TESTNET]: NativeCurrencyName.ETHER,
+  [ChainId.MANTA_PACIFIC]: NativeCurrencyName.ETHER,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -218,6 +229,8 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.BASE_GOERLI;
     case 3441005:
       return ChainName.MANTA_PACIFIC_TESTNET;
+    case 169:
+      return ChainName.MANTA_PACIFIC;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -259,6 +272,8 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_BASE!;
     case ChainId.MANTA_PACIFIC_TESTNET:
       return process.env.JSON_RPC_PROVIDER_MANTA_PACIFIC_TESTNET!;
+    case ChainId.MANTA_PACIFIC:
+      return process.env.JSON_RPC_PROVIDER_MANTA_PACIFIC!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }

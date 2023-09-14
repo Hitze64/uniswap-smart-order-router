@@ -32,6 +32,8 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
   [ChainId.BASE]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE].v3CoreFactoryAddress,
   [ChainId.MANTA_PACIFIC_TESTNET]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC_TESTNET].v3CoreFactoryAddress,
+  [ChainId.MANTA_PACIFIC]:
+    CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC].v3CoreFactoryAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -52,6 +54,8 @@ export const QUOTER_V2_ADDRESSES: AddressMap = {
   [ChainId.BASE]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE].quoterAddress,
   [ChainId.MANTA_PACIFIC_TESTNET]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC_TESTNET].quoterAddress,
+  [ChainId.MANTA_PACIFIC]:
+    CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC].quoterAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -80,6 +84,8 @@ export const UNISWAP_MULTICALL_ADDRESSES: AddressMap = {
   [ChainId.BASE]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE].multicallAddress,
   [ChainId.MANTA_PACIFIC_TESTNET]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC_TESTNET].multicallAddress,
+  [ChainId.MANTA_PACIFIC]:
+    CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC].multicallAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
