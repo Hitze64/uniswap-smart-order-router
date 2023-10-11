@@ -475,25 +475,25 @@ export class AlphaRouter
             chainId,
             provider,
             this.multicall2Provider,
-            {
+            /*retryOptions=*/ {
               retries: 2,
               minTimeout: 100,
               maxTimeout: 1000,
             },
-            {
-              multicallChunk: 110,
+            /*batchParams=*/ {
+              multicallChunk: 24,
               gasLimitPerCall: 1_200_000,
               quoteMinSuccessRate: 0.1,
             },
-            {
-              gasLimitOverride: 3_000_000,
-              multicallChunk: 45,
+            /*gasErrorFailureOverride=*/ {
+              gasLimitOverride: 1_000_000,
+              multicallChunk: 24,
             },
-            {
-              gasLimitOverride: 3_000_000,
-              multicallChunk: 45,
+            /*successRateFailureOverrides=*/ {
+              gasLimitOverride: 1_000_000,
+              multicallChunk: 24,
             },
-            {
+            /*blockNumberConfig=*/ {
               baseBlockOffset: -10,
               rollback: {
                 enabled: true,
