@@ -67,7 +67,7 @@ const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
   [ChainId.MANTA_PACIFIC_TESTNET]:
     'https://d3lcl3uht06cq4.cloudfront.net/subgraphs/name/aperture/uniswap-v3',
   [ChainId.MANTA_PACIFIC]:
-    'https://d2vin613o4opvi.cloudfront.net/subgraphs/name/aperture/uniswap-v3',
+    'https://api.goldsky.com/api/public/project_clnz7akg41cv72ntv0uhyd3ai/subgraphs/aperture/uniswap-v3/gn',
 };
 
 const PAGE_SIZE = 1000; // 1k is max possible query size from subgraph.
