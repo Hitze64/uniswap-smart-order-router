@@ -1,6 +1,7 @@
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 
-import { log } from '../util';
+import { ChainId, log } from '../util';
+
 import { ICache } from './cache';
 import { ProviderConfig } from './provider';
 import {
@@ -42,7 +43,7 @@ export class TokenPropertiesProvider implements ITokenPropertiesProvider {
     private tokenValidatorProvider: ITokenValidatorProvider,
     private tokenPropertiesCache: ICache<TokenPropertiesResult>,
     private tokenFeeFetcher: ITokenFeeFetcher,
-    private allowList = DEFAULT_ALLOWLIST,
+    private allowList = DEFAULT_ALLOWLIST
   ) {}
 
   public async getTokensProperties(
@@ -51,7 +52,10 @@ export class TokenPropertiesProvider implements ITokenPropertiesProvider {
   ): Promise<TokenPropertiesMap> {
     const tokenToResult: TokenPropertiesMap = {};
 
-    if (!providerConfig?.enableFeeOnTransferFeeFetching || this.chainId !== ChainId.MAINNET) {
+    if (
+      !providerConfig?.enableFeeOnTransferFeeFetching ||
+      this.chainId !== ChainId.MAINNET
+    ) {
       return tokenToResult;
     }
 

@@ -1,7 +1,8 @@
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import _ from 'lodash';
 
 import { log, WRAPPED_NATIVE_CURRENCY } from '../util';
+import { ChainId } from '../util/chain-to-addresses';
 
 import { ICache } from './cache';
 import {
@@ -143,7 +144,7 @@ export const CACHE_SEED_TOKENS: {
   [ChainId.BASE]: {
     USDC: USDC_BASE,
     WETH: WRAPPED_NATIVE_CURRENCY[ChainId.BASE],
-  }
+  },
   // Currently we do not have providers for Moonbeam mainnet or Gnosis testnet
 };
 

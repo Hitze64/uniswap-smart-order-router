@@ -1,5 +1,6 @@
 export * from './addresses';
 export * from './amounts';
+export * from './chain-to-addresses';
 export * from './chains';
 export * from './log';
 export * from './metric';

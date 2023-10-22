@@ -1,12 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Protocol } from '@uniswap/router-sdk';
-import {
-  ChainId,
-  Currency,
-  CurrencyAmount,
-  Token,
-  TradeType,
-} from '@uniswap/sdk-core';
+import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk/dist/entities';
 import { FeeAmount, Pool } from '@uniswap/v3-sdk';
 import JSBI from 'jsbi';
@@ -29,17 +23,21 @@ import {
 } from '../routers';
 import { log, WRAPPED_NATIVE_CURRENCY } from '../util';
 
+import { ChainId } from './chain-to-addresses';
 import { buildTrade } from './methodParameters';
 
 export async function getV2NativePool(
   token: Token,
   poolProvider: IV2PoolProvider,
-  providerConfig?: ProviderConfig,
+  providerConfig?: ProviderConfig
 ): Promise<Pair | null> {
   const chainId = token.chainId as ChainId;
   const weth = WRAPPED_NATIVE_CURRENCY[chainId]!;
 
-  const poolAccessor = await poolProvider.getPools([[weth, token]], providerConfig);
+  const poolAccessor = await poolProvider.getPools(
+    [[weth, token]],
+    providerConfig
+  );
   const pool = poolAccessor.getPool(weth, token);
 
   if (!pool || pool.reserve0.equalTo(0) || pool.reserve1.equalTo(0)) {

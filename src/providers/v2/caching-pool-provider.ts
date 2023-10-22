@@ -1,7 +1,8 @@
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk';
 import _ from 'lodash';
 
+import { ChainId } from '../../util/chain-to-addresses';
 import { log } from '../../util/log';
 
 import { ICache } from './../cache';

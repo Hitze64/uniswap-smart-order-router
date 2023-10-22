@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
@@ -11,13 +11,12 @@ import {
   metric,
   MetricLoggerUnit,
 } from '../../util';
+import { ChainId } from '../../util/chain-to-addresses';
 import { log } from '../../util/log';
 import { poolToString } from '../../util/routes';
 import { IMulticallProvider, Result } from '../multicall-provider';
 import { ProviderConfig } from '../provider';
-import {
-  ITokenPropertiesProvider,
-} from '../token-properties-provider';
+import { ITokenPropertiesProvider } from '../token-properties-provider';
 import { TokenValidationResult } from '../token-validator-provider';
 
 type IReserves = {
@@ -176,8 +175,12 @@ export class V2PoolProvider implements IV2PoolProvider {
           token0.symbol,
           token0.name,
           true, // at this point we know it's valid token address
-          tokenPropertiesMap[token0.address.toLowerCase()]?.tokenFeeResult?.buyFeeBps,
-          tokenPropertiesMap[token0.address.toLowerCase()]?.tokenFeeResult?.sellFeeBps
+          tokenPropertiesMap[
+            token0.address.toLowerCase()
+          ]?.tokenFeeResult?.buyFeeBps,
+          tokenPropertiesMap[
+            token0.address.toLowerCase()
+          ]?.tokenFeeResult?.sellFeeBps
         );
       }
 
@@ -192,8 +195,12 @@ export class V2PoolProvider implements IV2PoolProvider {
           token1.symbol,
           token1.name,
           true, // at this point we know it's valid token address
-          tokenPropertiesMap[token1.address.toLowerCase()]?.tokenFeeResult?.buyFeeBps,
-          tokenPropertiesMap[token1.address.toLowerCase()]?.tokenFeeResult?.sellFeeBps
+          tokenPropertiesMap[
+            token1.address.toLowerCase()
+          ]?.tokenFeeResult?.buyFeeBps,
+          tokenPropertiesMap[
+            token1.address.toLowerCase()
+          ]?.tokenFeeResult?.sellFeeBps
         );
       }
 

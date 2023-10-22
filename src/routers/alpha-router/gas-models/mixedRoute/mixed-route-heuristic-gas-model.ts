@@ -1,6 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { partitionMixedRouteByProtocol } from '@uniswap/router-sdk';
-import { ChainId } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk';
 import { Pool } from '@uniswap/v3-sdk';
 import JSBI from 'jsbi';
@@ -10,6 +9,7 @@ import { WRAPPED_NATIVE_CURRENCY } from '../../../..';
 import { ProviderConfig } from '../../../../providers/provider';
 import { log } from '../../../../util';
 import { CurrencyAmount } from '../../../../util/amounts';
+import { ChainId } from '../../../../util/chain-to-addresses';
 import { getV2NativePool } from '../../../../util/gas-factory-helpers';
 import { MixedRouteWithValidQuote } from '../../entities/route-with-valid-quote';
 import {

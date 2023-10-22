@@ -1,11 +1,12 @@
 import { Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { parseBytes32String } from '@ethersproject/strings';
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import _ from 'lodash';
 
 import { IERC20Metadata__factory } from '../types/v3/factories/IERC20Metadata__factory';
 import { log, WRAPPED_NATIVE_CURRENCY } from '../util';
+import { ChainId } from '../util/chain-to-addresses';
 
 import { IMulticallProvider, Result } from './multicall-provider';
 import { ProviderConfig } from './provider';
@@ -469,16 +470,16 @@ export const USDC_BASE = new Token(
   6,
   'USDbC',
   'USD Base Coin'
-)
+);
 
-// Base Goerli Tokens 
+// Base Goerli Tokens
 export const USDC_BASE_GOERLI = new Token(
   ChainId.BASE_GOERLI,
   '0x853154e2A5604E5C74a2546E2871Ad44932eB92C',
   6,
   'USDbC',
   'USD Base Coin'
-)
+);
 
 // Gnosis Tokens
 export const USDC_ETHEREUM_GNOSIS = new Token(
@@ -536,6 +537,38 @@ export const WBTC_MOONBEAM = new Token(
   8,
   'WBTC',
   'Wrapped BTC bridged using Multichain'
+);
+
+export const USDC_MANTA_PACIFIC_TESTNET = new Token(
+  ChainId.MANTA_PACIFIC_TESTNET,
+  '0x39471BEe1bBe79F3BFA774b6832D6a530edDaC6B',
+  6,
+  'USDC',
+  'USDC Test Token'
+);
+
+export const USDC_MANTA_PACIFIC = new Token(
+  ChainId.MANTA_PACIFIC,
+  '0xb73603C5d87fA094B7314C74ACE2e64D165016fb',
+  6,
+  'USDC',
+  'USD Coin'
+);
+
+export const USDT_MANTA_PACIFIC = new Token(
+  ChainId.MANTA_PACIFIC,
+  '0xf417F5A458eC102B90352F697D6e2Ac3A3d2851f',
+  6,
+  'USDT',
+  'Tether USD'
+);
+
+export const DAI_MANTA_PACIFIC = new Token(
+  ChainId.MANTA_PACIFIC,
+  '0x1c466b9371f8aBA0D7c458bE10a62192Fcb8Aa71',
+  18,
+  'DAI',
+  'Dai Stablecoin'
 );
 
 export class TokenProvider implements ITokenProvider {
@@ -739,6 +772,8 @@ export const DAI_ON = (chainId: ChainId): Token => {
       return DAI_BNB;
     case ChainId.AVALANCHE:
       return DAI_AVAX;
+    case ChainId.MANTA_PACIFIC:
+      return DAI_MANTA_PACIFIC;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
@@ -758,6 +793,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_ARBITRUM;
     case ChainId.BNB:
       return USDT_BNB;
+    case ChainId.MANTA_PACIFIC:
+      return USDT_MANTA_PACIFIC;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
@@ -795,6 +832,10 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_BASE;
     case ChainId.BASE_GOERLI:
       return USDC_BASE_GOERLI;
+    case ChainId.MANTA_PACIFIC_TESTNET:
+      return USDC_MANTA_PACIFIC_TESTNET;
+    case ChainId.MANTA_PACIFIC:
+      return USDC_MANTA_PACIFIC;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }

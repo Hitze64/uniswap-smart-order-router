@@ -1,29 +1,8 @@
-import { ChainId, Currency, Ether, NativeCurrency, Token } from '@uniswap/sdk-core';
+import { Currency, Ether, NativeCurrency, Token } from '@uniswap/sdk-core';
 
-// WIP: Gnosis, Moonbeam
-export const SUPPORTED_CHAINS: ChainId[] = [
-  ChainId.MAINNET,
-  ChainId.OPTIMISM,
-  ChainId.OPTIMISM_GOERLI,
-  ChainId.ARBITRUM_ONE,
-  ChainId.ARBITRUM_GOERLI,
-  ChainId.POLYGON,
-  ChainId.POLYGON_MUMBAI,
-  ChainId.GOERLI,
-  ChainId.SEPOLIA,
-  ChainId.CELO_ALFAJORES,
-  ChainId.CELO,
-  ChainId.BNB,
-  ChainId.AVALANCHE,
-  ChainId.BASE,
-  // Gnosis and Moonbeam don't yet have contracts deployed yet
-];
+import { ChainId } from './chain-to-addresses';
 
-export const V2_SUPPORTED = [
-  ChainId.MAINNET,
-  ChainId.GOERLI,
-  ChainId.SEPOLIA,
-];
+export const V2_SUPPORTED = [ChainId.MAINNET, ChainId.GOERLI, ChainId.SEPOLIA];
 
 export const HAS_L1_FEE = [
   ChainId.OPTIMISM,
@@ -32,6 +11,8 @@ export const HAS_L1_FEE = [
   ChainId.ARBITRUM_GOERLI,
   ChainId.BASE,
   ChainId.BASE_GOERLI,
+  ChainId.MANTA_PACIFIC_TESTNET,
+  ChainId.MANTA_PACIFIC,
 ];
 
 export const NETWORKS_WITH_SAME_UNISWAP_ADDRESSES = [
@@ -79,6 +60,10 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.BASE;
     case 84531:
       return ChainId.BASE_GOERLI;
+    case 3441005:
+      return ChainId.MANTA_PACIFIC_TESTNET;
+    case 169:
+      return ChainId.MANTA_PACIFIC;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -102,8 +87,9 @@ export enum ChainName {
   AVALANCHE = 'avalanche-mainnet',
   BASE = 'base-mainnet',
   BASE_GOERLI = 'base-goerli',
+  MANTA_PACIFIC_TESTNET = 'manta-pacific-testnet',
+  MANTA_PACIFIC = 'manta-pacific',
 }
-
 
 export enum NativeCurrencyName {
   // Strings match input for CLI
@@ -152,9 +138,7 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ],
-  [ChainId.POLYGON]: [
-    'MATIC', '0x0000000000000000000000000000000000001010'
-  ],
+  [ChainId.POLYGON]: ['MATIC', '0x0000000000000000000000000000000000001010'],
   [ChainId.POLYGON_MUMBAI]: [
     'MATIC',
     '0x0000000000000000000000000000000000001010',
@@ -163,11 +147,7 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
   [ChainId.CELO_ALFAJORES]: ['CELO'],
   [ChainId.GNOSIS]: ['XDAI'],
   [ChainId.MOONBEAM]: ['GLMR'],
-  [ChainId.BNB]: [
-    'BNB',
-    'BNB',
-    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  ],
+  [ChainId.BNB]: ['BNB', 'BNB', '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'],
   [ChainId.AVALANCHE]: [
     'AVAX',
     'AVALANCHE',
@@ -177,7 +157,17 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETH',
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  ]
+  ],
+  [ChainId.MANTA_PACIFIC_TESTNET]: [
+    'ETH',
+    'ETHER',
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  ],
+  [ChainId.MANTA_PACIFIC]: [
+    'ETH',
+    'ETHER',
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  ],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -197,6 +187,8 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.BNB]: NativeCurrencyName.BNB,
   [ChainId.AVALANCHE]: NativeCurrencyName.AVALANCHE,
   [ChainId.BASE]: NativeCurrencyName.ETHER,
+  [ChainId.MANTA_PACIFIC_TESTNET]: NativeCurrencyName.ETHER,
+  [ChainId.MANTA_PACIFIC]: NativeCurrencyName.ETHER,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -235,6 +227,10 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.BASE;
     case 84531:
       return ChainName.BASE_GOERLI;
+    case 3441005:
+      return ChainName.MANTA_PACIFIC_TESTNET;
+    case 169:
+      return ChainName.MANTA_PACIFIC;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -274,6 +270,10 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_AVALANCHE!;
     case ChainId.BASE:
       return process.env.JSON_RPC_PROVIDER_BASE!;
+    case ChainId.MANTA_PACIFIC_TESTNET:
+      return process.env.JSON_RPC_PROVIDER_MANTA_PACIFIC_TESTNET!;
+    case ChainId.MANTA_PACIFIC:
+      return process.env.JSON_RPC_PROVIDER_MANTA_PACIFIC!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }
@@ -400,7 +400,21 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     18,
     'WETH',
     'Wrapped Ether'
-  )
+  ),
+  [ChainId.MANTA_PACIFIC_TESTNET]: new Token(
+    ChainId.MANTA_PACIFIC_TESTNET,
+    '0xdB1fE098232A00A8B81dd6c2A911f2486cb374EE',
+    18,
+    'WETH',
+    'Wrapped Ether'
+  ),
+  [ChainId.MANTA_PACIFIC]: new Token(
+    ChainId.MANTA_PACIFIC,
+    '0x0Dc808adcE2099A9F62AA87D9670745AbA741746',
+    18,
+    'WETH',
+    'Wrapped Ether'
+  ),
 };
 
 function isMatic(

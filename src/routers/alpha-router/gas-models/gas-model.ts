@@ -1,5 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { Token } from '@uniswap/sdk-core';
 import { Pool } from '@uniswap/v3-sdk';
 
 import { ProviderConfig } from '../../../providers/provider';
@@ -11,6 +11,7 @@ import {
   DAI_BNB,
   DAI_GOERLI,
   DAI_MAINNET,
+  DAI_MANTA_PACIFIC,
   DAI_OPTIMISM,
   DAI_OPTIMISM_GOERLI,
   DAI_POLYGON_MUMBAI,
@@ -23,6 +24,8 @@ import {
   USDC_ETHEREUM_GNOSIS,
   USDC_GOERLI,
   USDC_MAINNET,
+  USDC_MANTA_PACIFIC,
+  USDC_MANTA_PACIFIC_TESTNET,
   USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_OPTIMISM_GOERLI,
@@ -32,6 +35,7 @@ import {
   USDT_BNB,
   USDT_GOERLI,
   USDT_MAINNET,
+  USDT_MANTA_PACIFIC,
   USDT_OPTIMISM,
   USDT_OPTIMISM_GOERLI,
   WBTC_GOERLI,
@@ -43,6 +47,7 @@ import {
   OptimismGasData,
 } from '../../../providers/v3/gas-data-provider';
 import { CurrencyAmount } from '../../../util/amounts';
+import { ChainId } from '../../../util/chain-to-addresses';
 import {
   MixedRouteWithValidQuote,
   RouteWithValidQuote,
@@ -74,6 +79,12 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.BNB]: [USDT_BNB, USDC_BNB, DAI_BNB],
   [ChainId.AVALANCHE]: [DAI_AVAX, USDC_AVAX],
   [ChainId.BASE]: [USDC_BASE],
+  [ChainId.MANTA_PACIFIC_TESTNET]: [USDC_MANTA_PACIFIC_TESTNET],
+  [ChainId.MANTA_PACIFIC]: [
+    DAI_MANTA_PACIFIC,
+    USDC_MANTA_PACIFIC,
+    USDT_MANTA_PACIFIC,
+  ],
 };
 
 export type L1ToL2GasCosts = {
