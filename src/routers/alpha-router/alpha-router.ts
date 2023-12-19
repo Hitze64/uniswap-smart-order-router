@@ -471,6 +471,7 @@ export class AlphaRouter
         case ChainId.OPTIMISM_GOERLI:
         case ChainId.MANTA_PACIFIC:
         case ChainId.MANTA_PACIFIC_TESTNET:
+        case ChainId.SCROLL:
           this.onChainQuoteProvider = new OnChainQuoteProvider(
             chainId,
             provider,
