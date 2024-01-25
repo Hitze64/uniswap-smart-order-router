@@ -34,6 +34,7 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC_TESTNET].v3CoreFactoryAddress,
   [ChainId.MANTA_PACIFIC]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC].v3CoreFactoryAddress,
+  [ChainId.SCROLL]: CHAIN_TO_ADDRESSES_MAP[ChainId.SCROLL].v3CoreFactoryAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -56,6 +57,7 @@ export const QUOTER_V2_ADDRESSES: AddressMap = {
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC_TESTNET].quoterAddress,
   [ChainId.MANTA_PACIFIC]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC].quoterAddress,
+  [ChainId.SCROLL]: CHAIN_TO_ADDRESSES_MAP[ChainId.SCROLL].quoterAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -86,6 +88,7 @@ export const UNISWAP_MULTICALL_ADDRESSES: AddressMap = {
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC_TESTNET].multicallAddress,
   [ChainId.MANTA_PACIFIC]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.MANTA_PACIFIC].multicallAddress,
+  [ChainId.SCROLL]: CHAIN_TO_ADDRESSES_MAP[ChainId.SCROLL].multicallAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -209,6 +212,13 @@ export const WETH9: {
   [ChainId.MANTA_PACIFIC]: new Token(
     ChainId.MANTA_PACIFIC,
     '0x0Dc808adcE2099A9F62AA87D9670745AbA741746',
+    18,
+    'WETH',
+    'Wrapped Ether'
+  ),
+  [ChainId.SCROLL]: new Token(
+    ChainId.SCROLL,
+    '0x5300000000000000000000000000000000000004',
     18,
     'WETH',
     'Wrapped Ether'

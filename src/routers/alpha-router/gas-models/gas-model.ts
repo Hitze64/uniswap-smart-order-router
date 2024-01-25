@@ -15,6 +15,7 @@ import {
   DAI_OPTIMISM,
   DAI_OPTIMISM_GOERLI,
   DAI_POLYGON_MUMBAI,
+  DAI_SCROLL,
   DAI_SEPOLIA,
   USDC_ARBITRUM,
   USDC_ARBITRUM_GOERLI,
@@ -30,6 +31,7 @@ import {
   USDC_OPTIMISM,
   USDC_OPTIMISM_GOERLI,
   USDC_POLYGON,
+  USDC_SCROLL,
   USDC_SEPOLIA,
   USDT_ARBITRUM,
   USDT_BNB,
@@ -38,6 +40,7 @@ import {
   USDT_MANTA_PACIFIC,
   USDT_OPTIMISM,
   USDT_OPTIMISM_GOERLI,
+  USDT_SCROLL,
   WBTC_GOERLI,
 } from '../../../providers/token-provider';
 import { IV2PoolProvider } from '../../../providers/v2/pool-provider';
@@ -85,6 +88,7 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
     USDC_MANTA_PACIFIC,
     USDT_MANTA_PACIFIC,
   ],
+  [ChainId.SCROLL]: [DAI_SCROLL, USDC_SCROLL, USDT_SCROLL],
 };
 
 export type L1ToL2GasCosts = {

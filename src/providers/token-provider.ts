@@ -571,6 +571,30 @@ export const DAI_MANTA_PACIFIC = new Token(
   'Dai Stablecoin'
 );
 
+export const USDC_SCROLL = new Token(
+  ChainId.SCROLL,
+  '0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4',
+  6,
+  'USDC',
+  'USD Coin'
+);
+
+export const USDT_SCROLL = new Token(
+  ChainId.SCROLL,
+  '0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df',
+  6,
+  'USDT',
+  'Tether USD'
+);
+
+export const DAI_SCROLL = new Token(
+  ChainId.SCROLL,
+  '0xcA77eB3fEFe3725Dc33bccB54eDEFc3D9f764f97',
+  18,
+  'DAI',
+  'Dai Stablecoin'
+);
+
 export class TokenProvider implements ITokenProvider {
   constructor(
     private chainId: ChainId,
@@ -774,6 +798,8 @@ export const DAI_ON = (chainId: ChainId): Token => {
       return DAI_AVAX;
     case ChainId.MANTA_PACIFIC:
       return DAI_MANTA_PACIFIC;
+    case ChainId.SCROLL:
+      return DAI_SCROLL;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
@@ -795,6 +821,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_BNB;
     case ChainId.MANTA_PACIFIC:
       return USDT_MANTA_PACIFIC;
+    case ChainId.SCROLL:
+      return USDT_SCROLL;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
@@ -836,6 +864,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_MANTA_PACIFIC_TESTNET;
     case ChainId.MANTA_PACIFIC:
       return USDC_MANTA_PACIFIC;
+    case ChainId.SCROLL:
+      return USDC_SCROLL;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }

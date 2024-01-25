@@ -13,6 +13,7 @@ export const HAS_L1_FEE = [
   ChainId.BASE_GOERLI,
   ChainId.MANTA_PACIFIC_TESTNET,
   ChainId.MANTA_PACIFIC,
+  ChainId.SCROLL,
 ];
 
 export const NETWORKS_WITH_SAME_UNISWAP_ADDRESSES = [
@@ -64,6 +65,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.MANTA_PACIFIC_TESTNET;
     case 169:
       return ChainId.MANTA_PACIFIC;
+    case 534352:
+      return ChainId.SCROLL;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -89,6 +92,7 @@ export enum ChainName {
   BASE_GOERLI = 'base-goerli',
   MANTA_PACIFIC_TESTNET = 'manta-pacific-testnet',
   MANTA_PACIFIC = 'manta-pacific',
+  SCROLL = 'scroll',
 }
 
 export enum NativeCurrencyName {
@@ -168,6 +172,11 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ],
+  [ChainId.SCROLL]: [
+    'ETH',
+    'ETHER',
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  ],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -189,6 +198,7 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.BASE]: NativeCurrencyName.ETHER,
   [ChainId.MANTA_PACIFIC_TESTNET]: NativeCurrencyName.ETHER,
   [ChainId.MANTA_PACIFIC]: NativeCurrencyName.ETHER,
+  [ChainId.SCROLL]: NativeCurrencyName.ETHER,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -231,6 +241,8 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.MANTA_PACIFIC_TESTNET;
     case 169:
       return ChainName.MANTA_PACIFIC;
+    case 534352:
+      return ChainName.SCROLL;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -274,6 +286,8 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_MANTA_PACIFIC_TESTNET!;
     case ChainId.MANTA_PACIFIC:
       return process.env.JSON_RPC_PROVIDER_MANTA_PACIFIC!;
+    case ChainId.SCROLL:
+      return process.env.JSON_RPC_PROVIDER_SCROLL!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }
@@ -411,6 +425,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
   [ChainId.MANTA_PACIFIC]: new Token(
     ChainId.MANTA_PACIFIC,
     '0x0Dc808adcE2099A9F62AA87D9670745AbA741746',
+    18,
+    'WETH',
+    'Wrapped Ether'
+  ),
+  [ChainId.SCROLL]: new Token(
+    ChainId.SCROLL,
+    '0x5300000000000000000000000000000000000004',
     18,
     'WETH',
     'Wrapped Ether'

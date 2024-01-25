@@ -18,6 +18,7 @@ export enum ChainId {
   BASE = 8453,
   MANTA_PACIFIC_TESTNET = 3441005,
   MANTA_PACIFIC = 169,
+  SCROLL = 534352,
 }
 
 type ChainAddresses = {
@@ -170,6 +171,17 @@ const MANTA_PACIFIC_ADDRESSES: ChainAddresses = {
   swapRouter02Address: '0x3488d5A2D0281f546e43435715C436b46Ec1C678',
 };
 
+const SCROLL_ADDRESSES: ChainAddresses = {
+  v3CoreFactoryAddress: '0x70C62C8b8e801124A4Aa81ce07b637A3e83cb919',
+  multicallAddress: '0xC1D2e074C38FdD5CA965000668420C80316F0915',
+  quoterAddress: '0x2566e082Cb1656d22BCbe5644F5b997D194b5299',
+  v3MigratorAddress: '0xF00577B5Dd0DA227298E954Ed11356F264Cf93d4',
+  nonfungiblePositionManagerAddress:
+    '0xB39002E4033b162fAc607fc3471E205FA2aE5967',
+  tickLensAddress: '0x85780e12e90D2a684eB8E7404c985b5B5c8ce7E9',
+  swapRouter02Address: '0xfc30937f5cDe93Df8d48aCAF7e6f5D8D8A31F636',
+};
+
 export const SUPPORTED_CHAINS = [
   ChainId.MAINNET,
   ChainId.OPTIMISM,
@@ -188,6 +200,7 @@ export const SUPPORTED_CHAINS = [
   ChainId.BASE_GOERLI,
   ChainId.MANTA_PACIFIC_TESTNET,
   ChainId.MANTA_PACIFIC,
+  ChainId.SCROLL,
 ] as const;
 export type SupportedChainsType = typeof SUPPORTED_CHAINS[number];
 
@@ -212,4 +225,5 @@ export const CHAIN_TO_ADDRESSES_MAP: Record<
   [ChainId.BASE_GOERLI]: BASE_GOERLI_ADDRESSES,
   [ChainId.MANTA_PACIFIC_TESTNET]: MANTA_PACIFIC_TESTNET_ADDRESSES,
   [ChainId.MANTA_PACIFIC]: MANTA_PACIFIC_ADDRESSES,
+  [ChainId.SCROLL]: SCROLL_ADDRESSES,
 };
